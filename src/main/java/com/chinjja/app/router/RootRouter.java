@@ -14,12 +14,14 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 @RequiredArgsConstructor
 public class RootRouter {
 	private final UserRouter user;
+	private final PostRouter post;
 	
 	@Bean
 	public RouterFunction<ServerResponse> router() {
 		return route()
 				.path("/api", api -> api
 						.path("/users", () -> user.router())
+						.path("/posts", () -> post.router())
 						)
 				.build();
 	}
