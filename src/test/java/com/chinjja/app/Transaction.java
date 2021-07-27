@@ -1,30 +1,36 @@
 package com.chinjja.app;
 
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.ReactiveTransactionManager;
 import org.springframework.transaction.reactive.TransactionalOperator;
 
+import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Component
+@RequiredArgsConstructor
 public class Transaction {
-	private static ReactiveTransactionManager tm;
-	public Transaction(ReactiveTransactionManager tm) {
-		Transaction.tm = tm;
-	}
+	private final TransactionalOperator tx;
 	
-	public static <T> Mono<T> rollback(Mono<T> mono) {
-		return TransactionalOperator.create(tm).execute(t -> {
+	public <T> Mono<T> rollback(Mono<T> mono) {
+		return tx.execute(t -> {
 			t.setRollbackOnly();
 			return mono;
 		}).next();
 	}
 	
-	public static <T> Flux<T> rollback(Flux<T> flux) {
-		return TransactionalOperator.create(tm).execute(t -> {
+	public <T> Flux<T> rollback(Flux<T> flux) {
+		return tx.execute(t -> {
 			t.setRollbackOnly();
 			return flux;
 		});
+	}
+	
+	public <T> Mono<T> transactional(Mono<T> mono) {
+		return tx.transactional(mono);
+	}
+	
+	public <T> Flux<T> transactional(Flux<T> flux) {
+		return tx.transactional(flux);
 	}
 }

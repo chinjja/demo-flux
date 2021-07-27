@@ -1,5 +1,6 @@
 package com.chinjja.app.security;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -12,6 +13,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 
 import com.chinjja.app.user.UserRepository;
 import com.chinjja.app.user.UserRoleRepository;
+import com.chinjja.app.user.UserService;
 
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
@@ -47,5 +49,10 @@ public class SecurityConfig {
 						.password(t.getT1().getPassword())
 						.roles(t.getT2().toArray(new String[0]))
 						.build());
+	}
+	
+	@Bean
+	public CommandLineRunner initUser(UserService userService) {
+		return args -> userService.init().subscribe();
 	}
 }
