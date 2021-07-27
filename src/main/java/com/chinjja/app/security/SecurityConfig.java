@@ -39,13 +39,12 @@ public class SecurityConfig {
 			UserRepository userRepository,
 			UserRoleRepository userRoleRepository) {
 		return username -> userRepository.findByEmail(username)
-				.zipWhen(user -> userRoleRepository.findAllRoleByUser(user)
-						.buffer()
-						.collectList())
-				.map(t -> User.builder()
-						.username(t.getT1().getEmail())
-						.password(t.getT1().getPassword())
-						.roles(t.getT2().toArray(new String[0]))
-						.build());
+				.flatMap(user -> userRoleRepository.findAllRoleByUser(user)
+						.collectList()
+						.map(roles -> User.builder()
+								.username(user.getEmail())
+								.password(user.getPassword())
+								.roles(roles.toArray(new String[0]))
+								.build()));
 	}
 }
