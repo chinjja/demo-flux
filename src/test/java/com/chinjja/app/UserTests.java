@@ -1,7 +1,6 @@
 package com.chinjja.app;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import javax.validation.ValidationException;
 
@@ -114,36 +113,30 @@ public class UserTests {
 	
 	@Test
 	void givenBadArgument_whenCreateUser_thenShouldThrowValidationException() {
-		assertThrows(ValidationException.class, () -> {
-			userService.create(UserCreateDto.builder()
-					.password("12345678")
-					.name("test")
-					.build())
-			.as(tx::rollback)
-			.as(StepVerifier::create)
-			.verifyError(ValidationException.class);
-		});
-		
-		assertThrows(ValidationException.class, () -> {
-			userService.create(UserCreateDto.builder()
-					.email("testuser.com")
-					.password("12345678")
-					.name("test")
-					.build())
-			.as(tx::rollback)
-			.as(StepVerifier::create)
-			.verifyError(ValidationException.class);
-		});
-		
-		assertThrows(ValidationException.class, () -> {
-			userService.create(UserCreateDto.builder()
-					.email("test@user.com")
-					.name("test")
-					.build())
-			.as(tx::rollback)
-			.as(StepVerifier::create)
-			.verifyError(ValidationException.class);
-		});
+		userService.create(UserCreateDto.builder()
+				.password("12345678")
+				.name("test")
+				.build())
+		.as(tx::rollback)
+		.as(StepVerifier::create)
+		.verifyError(ValidationException.class);
+
+		userService.create(UserCreateDto.builder()
+				.email("testuser.com")
+				.password("12345678")
+				.name("test")
+				.build())
+		.as(tx::rollback)
+		.as(StepVerifier::create)
+		.verifyError(ValidationException.class);
+
+		userService.create(UserCreateDto.builder()
+				.email("test@user.com")
+				.name("test")
+				.build())
+		.as(tx::rollback)
+		.as(StepVerifier::create)
+		.verifyError(ValidationException.class);
 	}
 	
 	@Test
