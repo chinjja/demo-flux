@@ -19,9 +19,7 @@ public class RootRouter {
 	public RouterFunction<ServerResponse> router() {
 		return route()
 				.path("/api", api -> api
-						.path("/users", b -> b
-								.add(user.router())
-								)
+						.path("/users", () -> user.router())
 						)
 				.build();
 	}
